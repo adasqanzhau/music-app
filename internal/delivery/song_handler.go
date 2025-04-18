@@ -2,12 +2,14 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"music-app/internal/models"
 	"music-app/internal/services"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type SongHandler struct {
@@ -26,6 +28,11 @@ func (h *SongHandler) CreateSong(c *gin.Context) {
 		return
 	}
 
+	if song.Title == "" || song.Author == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Title and Author are required"})
+		return
+	}
+
 	createdSong, err := h.service.CreateSong(context.Background(), &song)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -40,7 +47,11 @@ func (h *SongHandler) GetSongByID(c *gin.Context) {
 
 	song, err := h.service.GetSongByID(context.Background(), id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Song not found"})
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Song not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
 		return
 	}
 

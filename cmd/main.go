@@ -13,8 +13,6 @@ import (
 	"music-app/internal/repository"
 	"music-app/internal/routes"
 	"music-app/internal/services"
-
-	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -42,18 +40,15 @@ func main() {
 	log.Println("Connected to MongoDB")
 
 	database := client.Database("music-db")
-
 	songRepo := repository.NewSongRepository(database)
-
 	songService := services.NewSongService(songRepo)
-
-	router := gin.Default()
-	routes.SetupRouter(songService).Run(":5000")
 
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "5000"
 	}
+
+	router := routes.SetupRouter(songService)
 	log.Println("Server is running on port:", port)
 	router.Run(":" + port)
 }

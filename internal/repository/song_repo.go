@@ -17,12 +17,11 @@ type SongRepository struct {
 
 func NewSongRepository(db *mongo.Database) *SongRepository {
 	return &SongRepository{
-		collection: db.Collection("songs"),
+		collection: db.Collection("new_songs"),
 	}
 }
 
 func (r *SongRepository) CreateSong(ctx context.Context, song *models.Song) (*models.Song, error) {
-	song.ID = primitive.NewObjectID()
 	_, err := r.collection.InsertOne(ctx, song)
 	if err != nil {
 		return nil, err
