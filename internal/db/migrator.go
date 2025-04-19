@@ -17,6 +17,7 @@ type Migration struct {
 
 var allMigrations = []Migration{
 	{"001_init", migrations.Up001},
+	{"002_create_users_collection", migrations.Up002},
 	{"003_seed_song", migrations.Up003},
 }
 

@@ -43,12 +43,15 @@ func main() {
 	songRepo := repository.NewSongRepository(database)
 	songService := services.NewSongService(songRepo)
 
+	userRepo := repository.NewUserRepository(database)
+	authService := services.NewAuthService(userRepo)
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "5000"
 	}
 
-	router := routes.SetupRouter(songService)
+	router := routes.SetupRouter(songService, authService)
 	log.Println("Server is running on port:", port)
 	router.Run(":" + port)
 }
