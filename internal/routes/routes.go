@@ -18,13 +18,14 @@ func SetupRouter(songService *services.SongService, authService *services.AuthSe
 	songHandler := handlers.NewSongHandler(songService)
 
 	songs := router.Group("/songs")
-	songs.Use(middleware.JWTAuthMiddleware())
+	songs.Use(middleware.AuthMiddleware())
 	{
 		songs.POST("/", songHandler.CreateSong)
-		songs.GET("/", songHandler.GetAllSongs)
 		songs.GET("/:id", songHandler.GetSongByID)
 		songs.PUT("/:id", songHandler.UpdateSong)
 		songs.DELETE("/:id", songHandler.DeleteSong)
+		songs.GET("/my-songs", songHandler.GetMySongs)
+		songs.GET("/all-songs", songHandler.GetAllSongsForAdmin)
 	}
 
 	return router

@@ -83,3 +83,22 @@ func (r *SongRepository) DeleteSong(ctx context.Context, id string) error {
 	_, err = r.collection.DeleteOne(ctx, bson.M{"_id": objID})
 	return err
 }
+
+func (r *SongRepository) GetSongsByOwner(ctx context.Context, ownerUsername string) ([]*models.Song, error) {
+	filter := bson.M{"ownerUsername": ownerUsername}
+	cursor, err := r.collection.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var songs []*models.Song
+	for cursor.Next(ctx) {
+		var song models.Song
+		if err := cursor.Decode(&song); err != nil {
+			return nil, err
+		}
+		songs = append(songs, &song)
+	}
+	return songs, nil
+}

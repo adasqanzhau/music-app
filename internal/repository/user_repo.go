@@ -17,12 +17,12 @@ func NewUserRepository(db *mongo.Database) *UserRepository {
 	return &UserRepository{collection: db.Collection("users")}
 }
 
-func (r *UserRepository) CreateUser(ctx context.Context, user *models.User) error {
+func (r *UserRepository) Create(ctx context.Context, user *models.User) error {
 	_, err := r.collection.InsertOne(ctx, user)
 	return err
 }
 
-func (r *UserRepository) GetUserByUsername(ctx context.Context, username string) (*models.User, error) {
+func (r *UserRepository) GetByUsername(ctx context.Context, username string) (*models.User, error) {
 	var user models.User
 	err := r.collection.FindOne(ctx, bson.M{"username": username}).Decode(&user)
 	if err != nil {
