@@ -1,0 +1,8 @@
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb+srv://alicluster:kSwSkIxnbDDS4yu4@alicluster.zcjff.mongodb.net/?retryWrites=true&w=majority&appName=alicluster
+      - JWT_SECRET=500600ak
