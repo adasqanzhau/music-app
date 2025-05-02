@@ -65,7 +65,19 @@ func (h *SongHandler) GetMySongs(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, songs)
+	if songs == nil {
+		songs = []*models.Song{}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"songs": songs,
+		"message": func() string {
+			if len(songs) == 0 {
+				return "You haven't uploaded any songs yet"
+			}
+			return ""
+		}(),
+	})
 }
 
 func (h *SongHandler) UpdateSong(c *gin.Context) {

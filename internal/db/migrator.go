@@ -19,6 +19,7 @@ var allMigrations = []Migration{
 	{"001_init", migrations.Up001},
 	{"002_create_users_collection", migrations.Up002},
 	{"003_seed_song", migrations.Up003},
+	{"004_create_admin_user", migrations.Up004},
 }
 
 func RunMigrations(db *mongo.Database) error {

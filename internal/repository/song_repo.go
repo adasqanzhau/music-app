@@ -22,10 +22,15 @@ func NewSongRepository(db *mongo.Database) *SongRepository {
 }
 
 func (r *SongRepository) CreateSong(ctx context.Context, song *models.Song) (*models.Song, error) {
-	_, err := r.collection.InsertOne(ctx, song)
+	result, err := r.collection.InsertOne(ctx, song)
 	if err != nil {
 		return nil, err
 	}
+
+	if oid, ok := result.InsertedID.(primitive.ObjectID); ok {
+		song.ID = oid
+	}
+
 	return song, nil
 }
 

@@ -18,19 +18,19 @@ func NewAuthHandler(s *services.AuthService) *AuthHandler {
 }
 
 type AuthInput struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Username string `json:"username" binding:"required,min=4,max=20,alphanum"`
+	Password string `json:"password" binding:"required,min=8"`
 }
 
 func (h *AuthHandler) Register(c *gin.Context) {
 	var input AuthInput
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Incorrect data: username (4-20 characters, letters/numbers), password (minimum 8 characters)."})
 		return
 	}
 
 	if err := h.service.Register(context.Background(), input.Username, input.Password); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
